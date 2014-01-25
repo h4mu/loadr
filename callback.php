@@ -16,6 +16,16 @@ $access_token_req->sign_request(new OAuthSignatureMethod_HMAC_SHA1(), $consumer,
 $after_access_request = doHttpRequest($access_token_req->to_url());
 echo $after_access_request;
 parse_str($after_access_request, $access_tokens);
-
+# echo $access_tokens['oauth_token'];
+# echo $access_tokens['oauth_token_secret'];
+echo '...';
 $access_token = new OAuthConsumer($access_tokens['oauth_token'], $access_tokens['oauth_token_secret']);
+$streamkey_req = $access_token_req->from_consumer_and_token($consumer,
+                $access_token, "GET", "http://api.flickr.com/services/rest", array('method' => 'flickr.test.login', 'format' => 'json'));
+$streamkey_req->sign_request(new OAuthSignatureMethod_HMAC_SHA1(),$consumer,$access_token);
+
+$req_url = $streamkey_req->to_url();
+echo $req_url . "\n";
+$after_request = doHttpRequest($req_url);
+echo $after_request;
 ?>
